@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2rem 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        input[type='text'] {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type='text']:focus {
+            border-color: #007bff;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            color: #333;
+            word-break: break-all;
+        }
+        #result a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        #result a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: #d9534f;
+            font-size: 0.9rem;
+        }
+    </style>
+    <script>
+        async function shortenURL() {
+    const url = document.getElementById('url').value;
+    try {
+        const response = await fetch('<invoke_url_of_your_API>/shorten', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ long_url: url }) // <-- updated key
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || response.statusText}`);
+        }
+
+        const data = await response.json();
+        document.getElementById('result').innerHTML = `Shortened URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a>`;
+    } catch (error) {
+        console.error('Error shortening URL:', error);
+        document.getElementById('result').innerHTML = `<span class="error">Error: ${error.message}</span>`;
+    }
+}
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <input type='text' id='url' placeholder='Enter URL to shorten (e.g., https://example.com)'>
+        <button onclick='shortenURL()'>Shorten URL</button>
+        <p id='result'></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+curl -X POST "https://your-api-gateway-url/shorten" \
+     -H "Content-Type: application/json" \
+     -d '{"long_url": "https://instagram.com"}'
+
+
+{"short_url": "https://your-api-gateway-url/<code>"}
+
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": "logs:CreateLogGroup",
+			"Resource": "arn:aws:logs:<region>:<account_number>:*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": "arn:aws:logs:<region>:<account_number>:log-group:/aws/lambda/url_shortner:*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"dynamodb:PutItem",
+				"dynamodb:GetItem",
+				"dynamodb:Scan",
+				"dynamodb:UpdateItem",
+				"dynamodb:DeleteItem",
+				"dynamodb:DescribeTable"
+			],
+			"Resource": "arn:aws:dynamodb:<region>:<account_number>:table/<table_name>"
+		}
+	]
+}
